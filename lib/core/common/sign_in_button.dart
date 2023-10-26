@@ -8,9 +8,10 @@ class SignInButton extends ConsumerWidget {
   const SignInButton({super.key});
 
   void signInWithGoogle(
+    BuildContext context,
     WidgetRef ref,
   ) {
-    ref.read(authControllerProvider).signInWithGoogle();
+    ref.read(authControllerProvider).signInWithGoogle(context);
   }
 
   @override
@@ -19,7 +20,7 @@ class SignInButton extends ConsumerWidget {
     WidgetRef ref,
   ) {
     return ElevatedButton.icon(
-      onPressed: () => signInWithGoogle(ref),
+      onPressed: () => signInWithGoogle(context, ref),
       icon: Image.asset(
         Constants.googleLogoPath,
         width: 35,

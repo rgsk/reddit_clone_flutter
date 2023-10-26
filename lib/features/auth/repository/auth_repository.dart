@@ -2,10 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:reddit_clone_flutter/core/constants/constants.dart';
 import 'package:reddit_clone_flutter/core/constants/firebase_constants.dart';
+import 'package:reddit_clone_flutter/core/failure.dart';
 import 'package:reddit_clone_flutter/core/providers/firebase_providers.dart';
+import 'package:reddit_clone_flutter/core/type_defs.dart';
 import 'package:reddit_clone_flutter/models/user_model.dart';
 
 final authRepositoryProvider = Provider(
@@ -32,7 +35,7 @@ class AuthRepository {
   CollectionReference get _users =>
       _firestore.collection(FirebaseConstants.usersCollection);
 
-  void signInWithGoogle() async {
+  FutureEither<UserModel?> signInWithGoogle() async {
     try {
       UserCredential userCredential;
       if (kIsWeb) {
@@ -52,21 +55,43 @@ class AuthRepository {
       }
 
       final user = userCredential.user;
+      UserModel? userModel;
       if (user != null) {
-        final userModel = UserModel(
-          uid: user.uid,
-          name: user.displayName ?? 'No Name',
-          profilePic: user.photoURL ?? Constants.avatarDefault,
-          banner: Constants.bannerDefault,
-          isAuthenticated: true,
-          karma: 0,
-          awards: [],
-        );
-        _users.doc(user.uid).set(userModel.toMap());
+        if (userCredential.additionalUserInfo!.isNewUser) {
+          userModel = UserModel(
+            uid: user.uid,
+            name: user.displayName ?? 'No Name',
+            profilePic: user.photoURL ?? Constants.avatarDefault,
+            banner: Constants.bannerDefault,
+            isAuthenticated: true,
+            karma: 0,
+            awards: [],
+          );
+          await _users.doc(user.uid).set(userModel.toMap());
+        } else {
+          // old user
+          userModel = await getUserData(user.uid).first;
+        }
       }
+      return right(userModel);
+    } on FirebaseException catch (e) {
+      throw e.message!;
     } catch (e) {
-      //
-      print(e);
+      return left(
+        Failure(
+          e.toString(),
+        ),
+      );
     }
+  }
+
+  Stream<UserModel> getUserData(String uid) {
+    return _users.doc(uid).snapshots().map(
+      (event) {
+        return UserModel.fromMap(
+          event.data() as dynamic,
+        );
+      },
+    );
   }
 }
