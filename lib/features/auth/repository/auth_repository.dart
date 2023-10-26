@@ -3,7 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:reddit_clone_flutter/core/constants/constants.dart';
+import 'package:reddit_clone_flutter/core/constants/firebase_constants.dart';
 import 'package:reddit_clone_flutter/core/providers/firebase_providers.dart';
+import 'package:reddit_clone_flutter/models/user_model.dart';
 
 final authRepositoryProvider = Provider(
   (ref) => AuthRepository(
@@ -26,6 +29,9 @@ class AuthRepository {
         _auth = auth,
         _googleSignIn = googleSignIn;
 
+  CollectionReference get _users =>
+      _firestore.collection(FirebaseConstants.usersCollection);
+
   void signInWithGoogle() async {
     try {
       UserCredential userCredential;
@@ -45,8 +51,19 @@ class AuthRepository {
         userCredential = await _auth.signInWithCredential(credential);
       }
 
-      print('woohoo authentication working');
-      print(userCredential.user?.email);
+      final user = userCredential.user;
+      if (user != null) {
+        final userModel = UserModel(
+          uid: user.uid,
+          name: user.displayName ?? 'No Name',
+          profilePic: user.photoURL ?? Constants.avatarDefault,
+          banner: Constants.bannerDefault,
+          isAuthenticated: true,
+          karma: 0,
+          awards: [],
+        );
+        _users.doc(user.uid).set(userModel.toMap());
+      }
     } catch (e) {
       //
       print(e);
