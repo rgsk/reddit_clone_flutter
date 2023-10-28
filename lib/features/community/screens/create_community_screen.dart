@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reddit_clone_flutter/core/common/loader.dart';
+import 'package:reddit_clone_flutter/features/community/controller/community_controller.dart';
 
 class CreateCommunityScreen extends ConsumerStatefulWidget {
   const CreateCommunityScreen({super.key});
@@ -17,58 +19,68 @@ class _CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
     super.dispose();
   }
 
+  void createCommunity() {
+    ref.read(communityControllerProvider.notifier).createCommunity(
+          communityNameController.text.trim(),
+          context,
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Create a community',
-        ),
-      ),
-      body: Container(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Community name'),
-              SizedBox(
-                height: 10,
+    final isLoading = ref.watch(communityControllerProvider);
+    return isLoading
+        ? Loader()
+        : Scaffold(
+            appBar: AppBar(
+              title: Text(
+                'Create a community',
               ),
-              TextField(
-                controller: communityNameController,
-                decoration: InputDecoration(
-                  hintText: 'r/Community_name',
-                  filled: true,
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.all(18),
-                  fillColor: Theme.of(context).cardColor,
+            ),
+            body: Container(
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Community name'),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    TextField(
+                      controller: communityNameController,
+                      decoration: InputDecoration(
+                        hintText: 'r/Community_name',
+                        filled: true,
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.all(18),
+                        fillColor: Theme.of(context).cardColor,
+                      ),
+                      maxLength: 21,
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    ElevatedButton(
+                      onPressed: createCommunity,
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: Size(
+                          double.infinity,
+                          50,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(200),
+                        ),
+                      ),
+                      child: Text(
+                        'Create community',
+                        style: TextStyle(fontSize: 17),
+                      ),
+                    ),
+                  ],
                 ),
-                maxLength: 21,
               ),
-              SizedBox(
-                height: 30,
-              ),
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  minimumSize: Size(
-                    double.infinity,
-                    50,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(200),
-                  ),
-                ),
-                child: Text(
-                  'Create community',
-                  style: TextStyle(fontSize: 17),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+            ),
+          );
   }
 }
