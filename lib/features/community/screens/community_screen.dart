@@ -4,12 +4,17 @@ import 'package:reddit_clone_flutter/core/common/error_text.dart';
 import 'package:reddit_clone_flutter/core/common/loader.dart';
 import 'package:reddit_clone_flutter/features/auth/controller/auth_controller.dart';
 import 'package:reddit_clone_flutter/features/community/controller/community_controller.dart';
+import 'package:routemaster/routemaster.dart';
 
 class CommunityScreen extends ConsumerWidget {
   final String name;
   const CommunityScreen({super.key, required this.name});
 
   // r/memes
+
+  void navigateToModTools(BuildContext context) {
+    Routemaster.of(context).push('/mod-tools');
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -63,7 +68,7 @@ class CommunityScreen extends ConsumerWidget {
                                   ),
                                 ),
                                 OutlinedButton(
-                                  onPressed: () {},
+                                  onPressed: () => navigateToModTools(context),
                                   style: ElevatedButton.styleFrom(
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20),

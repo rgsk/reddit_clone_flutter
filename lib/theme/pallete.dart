@@ -10,7 +10,7 @@ class Pallete {
   static var blueColor = Colors.blue.shade300;
 
   // Themes
-  static var darkModeAppTheme = ThemeData.dark().copyWith(
+  static var darkModeAppTheme1 = ThemeData.dark().copyWith(
     scaffoldBackgroundColor: blackColor,
     cardColor: greyColor,
     appBarTheme: const AppBarTheme(
@@ -29,7 +29,9 @@ class Pallete {
     ), // will be used as alternative background color
   );
 
-  static var lightModeAppTheme = ThemeData.light().copyWith(
+  static var darkModeAppTheme = ThemeData.dark().copyWith();
+
+  static var lightModeAppTheme1 = ThemeData.light().copyWith(
     scaffoldBackgroundColor: whiteColor,
     cardColor: greyColor,
     appBarTheme: const AppBarTheme(
@@ -48,4 +50,6 @@ class Pallete {
       seedColor: blueColor,
     ), // will be used as alternative background color
   );
+
+  static var lightModeAppTheme = ThemeData.light().copyWith();
 }

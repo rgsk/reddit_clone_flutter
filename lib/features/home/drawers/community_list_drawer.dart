@@ -29,7 +29,6 @@ class CommunityListDrawer extends ConsumerWidget {
               ),
               leading: Icon(
                 Icons.add,
-                color: Colors.white,
               ),
               onTap: () => navigateToCreateCommunity(context),
             ),

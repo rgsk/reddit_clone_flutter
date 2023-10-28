@@ -54,7 +54,6 @@ class _CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
                         filled: true,
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.all(18),
-                        fillColor: Theme.of(context).cardColor,
                       ),
                       maxLength: 21,
                     ),
