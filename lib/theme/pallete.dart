@@ -25,7 +25,7 @@ class Pallete {
     primaryColor: redColor,
     colorScheme: ColorScheme.fromSeed(
       background: drawerColor,
-      seedColor: redColor,
+      seedColor: blueColor,
     ), // will be used as alternative background color
   );
 
@@ -45,7 +45,7 @@ class Pallete {
     primaryColor: redColor,
     colorScheme: ColorScheme.fromSeed(
       background: drawerColor,
-      seedColor: redColor,
+      seedColor: blueColor,
     ), // will be used as alternative background color
   );
 }
